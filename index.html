@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veneers AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        input[type="file"],
+        select {
+            margin: 20px 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Veneers AI</h1>
+        <p>Upload an image to see the AI-powered veneer visualization.</p>
+        <form id="upload-form">
+            <input type="file" id="image-input" name="image" accept="image/*" required />
+
+            <label for="style-select">Choose Veneer Style:</label>
+            <select id="style-select" name="style">
+                <option value="classic">Classic</option>
+                <option value="natural">Natural</option>
+                <option value="pearly_white">Pearly White</option>
+            </select>
+
+            <label for="brightness-select">Choose Brightness Level:</label>
+            <select id="brightness-select" name="brightness">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+
+            <label for="price-select">Choose Price Range:</label>
+            <select id="price-select" name="price">
+                <option value="economy">Economy</option>
+                <option value="premium">Premium</option>
+                <option value="luxury">Luxury</option>
+            </select>
+
+            <button type="submit">Upload and Process</button>
+        </form>
+
+        <div id="output">
+            <p class="error" id="error-message"></p>
+            <img id="processed-image" alt="" style="display: none;" />
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('upload-form');
+        const imageInput = document.getElementById('image-input');
+        const styleSelect = document.getElementById('style-select');
+        const brightnessSelect = document.getElementById('brightness-select');
+        const priceSelect = document.getElementById('price-select');
+        const errorMessage = document.getElementById('error-message');
+        const processedImage = document.getElementById('processed-image');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            errorMessage.textContent = '';
+            processedImage.style.display = 'none';
+
+            const file = imageInput.files[0];
+            if (!file) {
+                errorMessage.textContent = 'Please select an image.';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('style', styleSelect.value);
+            formData.append('brightness', brightnessSelect.value);
+            formData.append('price', priceSelect.value);
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    processedImage.src = `data:image/jpeg;base64,${data.image}`;
+                    processedImage.style.display = 'block';
+                } else {
+                    errorMessage.textContent = data.error || 'An error occurred while processing the image.';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Failed to connect to the server.';
+            }
+        });
+    </script>
+</body>
+
+</html>
