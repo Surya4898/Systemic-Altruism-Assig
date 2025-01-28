@@ -1,6 +1,5 @@
 # Systemic-Altruism-Assig
-Veneers AI
-Veneers AI is an application that allows users to upload an image and visualize it with an AI-powered veneer effect. The application provides an option to choose different veneer styles, brightness levels, and price ranges for a more personalized experience.
+Veneers AI is an application allowing users to upload and visualize an image with an AI-powered veneer effect. The application provides an option to choose different veneer styles, brightness levels, and price ranges for a more personalized experience.
 
 Features:
 Upload an image to process.
